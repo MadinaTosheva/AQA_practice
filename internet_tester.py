@@ -1,37 +1,98 @@
-import time
-
 from playwright.sync_api import sync_playwright
 
 
 URL = "https://the-internet.herokuapp.com/"
 
-def navigate_to_example(example_name: str):
+def navigate_to_example(page, example_name: str):
     page.locator(f"text = {example_name}").click()
+    return page.url
 
-    # page.locator("#username").fill("tomsmith")
-    # page.locator("#password").fill("SuperSecretPassword!")
-    # page.get_by_role("button", name = "Login").click()
-    # page.get_by_role("link", name="Logout").click()
-    # return page.url  # передаёт весь урл сайта
-    #        #page.title()  # передаёт корень урл сайта
 
-    # checkbox1 = page.locator("(//form[@id = 'checkboxes']/input)[1]")
-    # checkbox2 = page.locator("(//form[@id = 'checkboxes']/input)[2]")
-    #
-    # assert checkbox1.is_checked() == False
-    # assert checkbox2.is_checked() == True
-    #
-    # # checkbox1.click()
-    # # checkbox2.click()
-    # checkbox1.check()
-    # checkbox2.uncheck()
-    #
-    # assert checkbox1.is_checked() == True
-    # assert checkbox2.is_checked() == False
-    #
-    # return (f"Checkbox 1: checked = {checkbox1.is_checked()}\n"
-    #        f"Checkbox 2: checked =  {checkbox2.is_checked()}
+def task_01():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
 
+        title_locator = page.locator(".heading").text_content()
+        assert "the-internet" in title_locator, "Неправильный заголовок"
+        print(f"Сайт доступен. Заголовок: {title_locator}")
+
+        browser.close()
+
+
+def task_02():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        auth_page = navigate_to_example(page, "Form Authentication")
+        print(auth_page)
+        assert "/login" in auth_page, "Неверный заголовок"
+        print(f"Перешли в: Form Authentication | URL: {auth_page}")
+
+        browser.close()
+
+def task_03():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "Form Authentication")
+        page.locator("#username").fill("tomsmith")
+        page.locator("#password").fill("SuperSecretPassword!")
+        page.get_by_role("button", name = "Login").click()
+
+        assert "/secure" in page.url, "Неверный заголовок"
+        print(f"Успешный вход! URL: {page.url}")
+
+        browser.close()
+
+def task_04():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "Form Authentication")
+        page.locator("#username").fill("tomsmith")
+        page.locator("#password").fill("SuperSecretPassword!")
+        page.get_by_role("button", name="Login").click()
+        page.get_by_role("link", name="Logout").click()
+
+        assert "/login" in page.url
+        print(f"Успешный выход! URL: {page.url}")
+
+        browser.close()
+
+
+def task_05():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "Checkboxes")
+        checkbox1 = page.locator("(//form[@id = 'checkboxes']/input)[1]")
+        checkbox2 = page.locator("(//form[@id = 'checkboxes']/input)[2]")
+
+        assert checkbox1.is_checked() == False
+        assert checkbox2.is_checked() == True
+
+       # checkbox1.click()
+       # checkbox2.click()
+        checkbox1.check()
+        checkbox2.uncheck()
+
+        assert checkbox1.is_checked() == True
+        assert checkbox2.is_checked() == False
+
+        print(f"Checkbox 1: checked = {checkbox1.is_checked()}\n"
+              f"Checkbox 2: checked =  {checkbox2.is_checked()}")
+
+        browser.close()
     # dropdown_loc = page.locator('#dropdown')
     # assert page.locator('#dropdown>option:first-child').inner_text() == "Please select an option", "Неверный локатор"
     #
@@ -76,25 +137,7 @@ def navigate_to_example(example_name: str):
 
 
 if __name__ == "__main__":
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, slow_mo=1000)
-        page = browser.new_page()
-        page.goto(URL)
-
-        title_locator = page.locator(".heading").text_content()
-        assert "the-internet" in title_locator, "Неправильный заголовок"
-        print(f"Сайт доступен. Заголовок: {title_locator}")
-
-        # auth_page = navigate_to_example("Form Authentication")
-        # print(auth_page)
-        # assert "/login" in auth_page, "Неверный заголовок"
-        # print(f"Перешли в: Form Authentication | URL: {auth_page}")
-
-        # assert "/secure" in auth_page, "Неверный заголовок"
-        # print(f"Успешный вход! URL: {auth_page}")
-
-        # assert "/login" in auth_page
-        # print(f"Успешный выход! URL: {auth_page}")
+    task_01()
 
         # checkbox_page = navigate_to_example("Checkboxes")
         # print(checkbox_page)
@@ -108,7 +151,7 @@ if __name__ == "__main__":
         # hovers = navigate_to_example("Hovers")
         # print(hovers)
 
-        alerts = navigate_to_example("JavaScript Alerts")
-        print(alerts)
-
-        browser.close()
+        # alerts = navigate_to_example("JavaScript Alerts")
+        # print(alerts)
+        #
+        # browser.close()
