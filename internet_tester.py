@@ -93,65 +93,85 @@ def task_05():
               f"Checkbox 2: checked =  {checkbox2.is_checked()}")
 
         browser.close()
-    # dropdown_loc = page.locator('#dropdown')
-    # assert page.locator('#dropdown>option:first-child').inner_text() == "Please select an option", "Неверный локатор"
-    #
-    # dropdown_loc.select_option(label="Option 1")
-    # selected_text = page.locator('[selected="selected"]')
-    # option_1_text = selected_text.inner_text()
-    # print(option_1_text)
-    # assert "Option 1" in option_1_text
-    #
-    # dropdown_loc.select_option(label="Option 2")
-    # selected_text = page.locator('[selected="selected"]')
-    # option_2_text = selected_text.inner_text()
-    # print(option_2_text)
-    # assert "Option 2" in option_2_text
-    #
-    # return f" Выбрано: {option_2_text}"
 
-    # input_number_loc = page.locator("[type='number']")
-    # input_number_loc.fill('123')
-    # field_data = input_number_loc.input_value()
-    # assert field_data == '123'
-    #
-    # input_number_loc.clear()
-    # input_number_loc.fill('456')
-    # field_data = input_number_loc.input_value()
-    # assert field_data == '456'
-    #
-    # return f'Введено: 456'
+def task_06():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
 
-    # figure_loc = page.locator('(//div[@class="example"]/div/img)[1]')
-    # hidden_info_locator = page.locator('(//div[@class="figcaption"]/h5)[1]')
-    # figure_loc.hover()
-    # assert hidden_info_locator.is_visible()
-    # assert hidden_info_locator.inner_text() == 'name: user1'
-    #
-    # return "Навели на изображение. Текст: name: user1"
+        navigate_to_example(page, "Dropdown")
+        dropdown_loc = page.locator('#dropdown')
+        assert page.locator('#dropdown>option:first-child').inner_text() == "Please select an option", "Неверный локатор"
 
-    page.locator('[onclick="jsAlert()"]').click()
-    page.on("dialog", lambda dialog: dialog.accept())
+        dropdown_loc.select_option(label="Option 1")
+        selected_text = page.locator('[selected="selected"]')
+        option_1_text = selected_text.inner_text()
+        print(option_1_text)
+        assert "Option 1" in option_1_text
+
+        dropdown_loc.select_option(label="Option 2")
+        selected_text = page.locator('[selected="selected"]')
+        option_2_text = selected_text.inner_text()
+        print(option_2_text)
+        assert "Option 2" in option_2_text
+
+        print(f" Выбрано: {option_2_text}")
+
+        browser.close()
+
+
+def task_07():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "Inputs")
+        input_number_loc = page.locator("[type='number']")
+        input_number_loc.fill('123')
+        field_data = input_number_loc.input_value()
+        assert field_data == '123'
+        input_number_loc.clear()
+        input_number_loc.fill('456')
+        field_data = input_number_loc.input_value()
+        assert field_data == '456'
+        print(f'Введено: 456')
+
+        browser.close()
+
+
+def task_08():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "Hovers")
+        figure_loc = page.locator('(//div[@class="example"]/div/img)[1]')
+        hidden_info_locator = page.locator('(//div[@class="figcaption"]/h5)[1]')
+        figure_loc.hover()
+        assert hidden_info_locator.is_visible()
+        assert hidden_info_locator.inner_text() == 'name: user1'
+
+        print("Навели на изображение. Текст: name: user1")
+
+        browser.close()
+
+def task_09():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL)
+
+        navigate_to_example(page, "JavaScript Alerts")
+        page.locator('[onclick="jsAlert()"]').click()
+        page.on("dialog", lambda dialog: dialog.accept())
+
+        browser.close()
 
 
 
 
 if __name__ == "__main__":
-    task_01()
-
-        # checkbox_page = navigate_to_example("Checkboxes")
-        # print(checkbox_page)
-
-        # dropdown = navigate_to_example("Dropdown")
-        # print(dropdown)
-
-        # Inputs = navigate_to_example("Inputs")
-        # print(Inputs)
-
-        # hovers = navigate_to_example("Hovers")
-        # print(hovers)
-
-        # alerts = navigate_to_example("JavaScript Alerts")
-        # print(alerts)
-        #
-        # browser.close()
+    task_09()
