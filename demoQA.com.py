@@ -8,6 +8,7 @@ DINAMIC_CLICK = '#dynamicClickMessage'
 FULL_NAME_INPUT = "#userName"
 EMAIL_INPUT = '#userEmail'
 
+
 def task_01():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, slow_mo=1000)
