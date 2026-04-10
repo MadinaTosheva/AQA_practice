@@ -1,56 +1,65 @@
+import pytest
 from playwright.sync_api import sync_playwright, expect
 
-URL = "https://demoqa.com"
+BASE_URL = "https://demoqa.com"
 
-DOUBLE_CLICK_BUTTON = "#doubleClickBtn"
-CLICK_ME_BUTTON = "div.mt-4:nth-child(4) button"
-DINAMIC_CLICK = '#dynamicClickMessage'
-FULL_NAME_INPUT = "#userName"
-EMAIL_INPUT = '#userEmail'
+DOUBLE_CLICK_BUTTON_loc = "#doubleClickBtn"
+CLICK_ME_BUTTON_loc = "div.mt-4:nth-child(4) button"
+DINAMIC_CLICK_loc = '#dynamicClickMessage'
+FULL_NAME_INPUT_loc = "#userName"
+EMAIL_INPUT_loc = '#userEmail'
 
+SELECT_VALUE_TEXT = "Select Option"
 
-def task_01():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, slow_mo=1000)
-        page = browser.new_page()
-        page.goto(f"{URL}/buttons")
-
-        double_click_button = page.locator(DOUBLE_CLICK_BUTTON).inner_text()
-        print(double_click_button)
-        assert double_click_button == "Double Click Me"
-
-
-def task_02():
+@pytest.fixture
+def launch_browser():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, slow_mo=1000)
         page = browser.new_page()
-        page.goto(f"{URL}/buttons")
+        page.goto(BASE_URL)
 
-        page.locator(CLICK_ME_BUTTON).click()
-        expect(page.locator(DINAMIC_CLICK)).to_have_text("You have done a dynamic click")
-        dynamic_click_message = page.locator(DINAMIC_CLICK).inner_text()
-        # expect(dynamic_click_message).to_have_text("You have done a right click")
+        yield page
 
-        assert dynamic_click_message == "You have done a dynamic click"
+        browser.close()
 
 
-def task_03():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, slow_mo=1000)
-        page = browser.new_page()
-        page.goto(f"{URL}/text-box")
+def test_task_01(launch_browser):
+    page = launch_browser
 
-        user_name_input = page.locator(FULL_NAME_INPUT)
-        user_name_input.fill("Madina")
-        # user_name_input.inner_text()
-
-        user_email_input = page.locator(EMAIL_INPUT)
-        user_email_input.fill("test@gmail.com")
-
-        print(f"Имя: {user_name_input.input_value()},\n"
-              f"Email: {user_email_input.input_value()}")
+    page.goto(f"{BASE_URL}/buttons")
+    double_click_button = page.locator(DOUBLE_CLICK_BUTTON_loc).inner_text()
+    assert double_click_button == "Double Click Me"
 
 
+def test_task_02(launch_browser):
+    page = launch_browser
 
-if __name__ == "__main__":
-    task_03()
+    page.goto(f"{BASE_URL}/buttons")
+    page.locator(CLICK_ME_BUTTON_loc).click()
+    expect(page.locator(DINAMIC_CLICK_loc)).to_have_text("You have done a dynamic click")
+    dynamic_click_message = page.locator(DINAMIC_CLICK_loc).inner_text()
+    # expect(dynamic_click_message).to_have_text("You have done a right click")
+
+    assert dynamic_click_message == "You have done a dynamic click"
+
+
+def test_task_03(launch_browser):
+    page = launch_browser
+
+    page.goto(f"{BASE_URL}/text-box")
+    user_name_input = page.locator(FULL_NAME_INPUT_loc)
+    user_name_input.fill("Madina")
+
+    user_email_input = page.locator(EMAIL_INPUT_loc)
+    user_email_input.fill("test@gmail.com")
+
+    print(f"Имя: {user_name_input.input_value()},\n"
+          f"Email: {user_email_input.input_value()}")
+
+
+def test_task_04(launch_browser):
+    page = launch_browser
+
+    page.goto(f"{BASE_URL}/select-menu")
+    select_value_dropdown = page.get_by_text(SELECT_VALUE_TEXT, exact=True).all_inner_texts()
+    print(select_value_dropdown)
