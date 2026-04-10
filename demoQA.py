@@ -8,8 +8,9 @@ CLICK_ME_BUTTON_loc = "div.mt-4:nth-child(4) button"
 DINAMIC_CLICK_loc = '#dynamicClickMessage'
 FULL_NAME_INPUT_loc = "#userName"
 EMAIL_INPUT_loc = '#userEmail'
+CURRENT_ADDRESS_loc = "#currentAddress-label"
 
-SELECT_VALUE_TEXT = "Select Option"
+SELECT_VALUE_loc = "#withOptGroup"
 
 @pytest.fixture
 def launch_browser():
@@ -61,5 +62,27 @@ def test_task_04(launch_browser):
     page = launch_browser
 
     page.goto(f"{BASE_URL}/select-menu")
-    select_value_dropdown = page.get_by_text(SELECT_VALUE_TEXT, exact=True).all_inner_texts()
-    print(select_value_dropdown)
+    select_value_dropdown = page.locator(SELECT_VALUE_loc)
+    select_value_dropdown_list = select_value_dropdown.get_by_role("option")
+    assert select_value_dropdown_list.count() == 0
+    select_value_dropdown.click()
+    assert select_value_dropdown_list.count() == 6
+
+    print(select_value_dropdown_list.count())
+    print(select_value_dropdown_list.all_inner_texts())
+    print(select_value_dropdown_list.all_text_contents())
+
+    assert "Optimus Prime" in select_value_dropdown_list.all_inner_texts(), "В списке нету опции - Optimus Prime"
+
+
+def test_task_05(launch_browser):
+    page = launch_browser
+
+    page.goto(f"{BASE_URL}/text-box")
+    current_address_input = page.locator(CURRENT_ADDRESS_loc)
+
+    print(current_address_input.inner_text())
+    print(current_address_input.text_content())
+    assert current_address_input.inner_text() == current_address_input.text_content()
+
+    print(repr(current_address_input.inner_text()))  ## 'Current Address'
