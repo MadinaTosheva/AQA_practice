@@ -6,7 +6,7 @@ BASE_URL = "https://the-internet.herokuapp.com"
 HEADER_TITLE_LOC = "#content h2"
 USERNAME_LOC = "#username"
 PASSWORD_LOC = "#password"
-LOGIN_LOC = "[type='submit']"
+LOGIN_LOC = "[type='submit_file']"
 VALIDATION_ERROR_LOC = "#flash"
 
 
@@ -22,7 +22,7 @@ def launch_browser():
         browser.close()
 
 
-def test_task_06(launch_browser):
+def test_task_27_06(launch_browser):
     page = launch_browser
 
     page.goto(BASE_URL)
@@ -32,7 +32,7 @@ def test_task_06(launch_browser):
     expect(header_loc).to_contain_text(header_text)
 
 
-def test_task_07(launch_browser):
+def test_task_27_07(launch_browser):
     page = launch_browser
 
     page.goto(f"{BASE_URL}/login")
